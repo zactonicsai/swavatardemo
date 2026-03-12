@@ -553,6 +553,13 @@ document.addEventListener('click', function(e) {
     doReset();
     return;
   }
+
+  // --- Certificate button ---
+  if (e.target.id === 'certBtn' || e.target.closest('#certBtn')) {
+    e.preventDefault();
+    printCertificate();
+    return;
+  }
 });
 
 // Escape closes modal
@@ -624,6 +631,130 @@ function closeModal() {
 }
 
 // ═══════════════════════════════════════
+//  CERTIFICATE
+// ═══════════════════════════════════════
+function printCertificate() {
+  var score = load('lesson1_score') || 0;
+  if (score < 75) { alert('You need a score of 75% or higher to earn a certificate.'); return; }
+
+  var studentName = prompt('Enter your full name for the certificate:', '');
+  if (!studentName || studentName.trim() === '') return;
+  studentName = studentName.trim();
+
+  var today = new Date();
+  var dateStr = today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  var certId = 'SWT-' + today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0') + '-' + Math.floor(Math.random()*9000+1000);
+
+  var certHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Certificate of Completion</title>';
+  certHTML += '<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Source+Sans+3:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">';
+  certHTML += '<style>';
+  certHTML += '@page { size: landscape; margin: 0; }';
+  certHTML += '*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }';
+  certHTML += 'body { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #f5f0eb; font-family: "Source Sans 3", sans-serif; }';
+  certHTML += '.cert { width: 1040px; height: 720px; background: white; position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.12); }';
+
+  // Decorative border
+  certHTML += '.cert::before { content: ""; position: absolute; inset: 16px; border: 3px solid #d4a843; border-radius: 4px; pointer-events: none; }';
+  certHTML += '.cert::after { content: ""; position: absolute; inset: 22px; border: 1px solid #d4a84366; border-radius: 2px; pointer-events: none; }';
+
+  // Corner ornaments
+  certHTML += '.corner { position: absolute; width: 80px; height: 80px; }';
+  certHTML += '.corner svg { width: 100%; height: 100%; }';
+  certHTML += '.c-tl { top: 28px; left: 28px; }';
+  certHTML += '.c-tr { top: 28px; right: 28px; transform: scaleX(-1); }';
+  certHTML += '.c-bl { bottom: 28px; left: 28px; transform: scaleY(-1); }';
+  certHTML += '.c-br { bottom: 28px; right: 28px; transform: scale(-1,-1); }';
+
+  // Content
+  certHTML += '.content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 60px 80px; text-align: center; }';
+  certHTML += '.org-line { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: #4a7c6f; margin-bottom: 12px; }';
+  certHTML += '.cert-title { font-family: "DM Serif Display", Georgia, serif; font-size: 44px; color: #1a1a2e; line-height: 1.15; margin-bottom: 6px; }';
+  certHTML += '.cert-subtitle { font-family: "Source Sans 3", sans-serif; font-size: 15px; color: #3d405b99; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 32px; }';
+  certHTML += '.divider { width: 120px; height: 2px; background: linear-gradient(90deg, transparent, #d4a843, transparent); margin: 0 auto 28px; }';
+  certHTML += '.presented { font-family: "Source Sans 3", sans-serif; font-size: 14px; color: #3d405b99; margin-bottom: 8px; }';
+  certHTML += '.student-name { font-family: "Playfair Display", Georgia, serif; font-size: 42px; color: #c45d3e; font-style: italic; margin-bottom: 8px; line-height: 1.2; }';
+  certHTML += '.name-line { width: 340px; height: 1px; background: #d4a843; margin: 0 auto 28px; }';
+  certHTML += '.desc { font-family: "Source Sans 3", sans-serif; font-size: 15px; color: #3d405bcc; max-width: 620px; line-height: 1.65; margin-bottom: 28px; }';
+  certHTML += '.score-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #e6f0ec, #d4eee6); border: 1px solid #4a7c6f33; padding: 8px 24px; border-radius: 100px; margin-bottom: 32px; }';
+  certHTML += '.score-badge span { font-family: "DM Serif Display", serif; font-size: 24px; color: #4a7c6f; }';
+  certHTML += '.score-badge small { font-size: 13px; color: #4a7c6faa; }';
+  certHTML += '.footer-row { display: flex; align-items: flex-end; justify-content: space-between; width: 100%; max-width: 700px; }';
+  certHTML += '.sig-block { text-align: center; }';
+  certHTML += '.sig-line { width: 180px; height: 1px; background: #1a1a2e44; margin-bottom: 6px; }';
+  certHTML += '.sig-label { font-size: 11px; color: #3d405b99; letter-spacing: 0.1em; text-transform: uppercase; }';
+  certHTML += '.date-block { text-align: center; }';
+  certHTML += '.date-text { font-family: "Source Sans 3", sans-serif; font-size: 15px; color: #1a1a2e; font-weight: 600; margin-bottom: 6px; }';
+  certHTML += '.cert-id { font-family: "JetBrains Mono", monospace; font-size: 10px; color: #3d405b66; position: absolute; bottom: 24px; right: 40px; }';
+
+  // Seal
+  certHTML += '.seal { width: 72px; height: 72px; }';
+  certHTML += '.seal svg { width: 100%; height: 100%; }';
+
+  // Print styles
+  certHTML += '@media print { body { background: white; } .cert { box-shadow: none; width: 100vw; height: 100vh; } }';
+  certHTML += '</style></head><body>';
+
+  certHTML += '<div class="cert">';
+
+  // Corner ornaments (SVG flourishes)
+  var cornerSVG = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4 C4 4 4 40 4 40 C4 40 8 20 24 12 C40 4 40 4 40 4" stroke="#d4a843" stroke-width="1.5" fill="none"/><path d="M4 4 C4 4 40 4 40 4 C40 4 20 8 12 24 C4 40 4 40 4 40" stroke="#d4a843" stroke-width="1" fill="none" opacity="0.4"/><circle cx="4" cy="4" r="3" fill="#d4a843"/></svg>';
+  certHTML += '<div class="corner c-tl">' + cornerSVG + '</div>';
+  certHTML += '<div class="corner c-tr">' + cornerSVG + '</div>';
+  certHTML += '<div class="corner c-bl">' + cornerSVG + '</div>';
+  certHTML += '<div class="corner c-br">' + cornerSVG + '</div>';
+
+  // Content
+  certHTML += '<div class="content">';
+  certHTML += '<p class="org-line">Social Work Training Academy</p>';
+  certHTML += '<h1 class="cert-title">Certificate of Completion</h1>';
+  certHTML += '<p class="cert-subtitle">Avatar-Based Training Simulation</p>';
+  certHTML += '<div class="divider"></div>';
+  certHTML += '<p class="presented">This is to certify that</p>';
+  certHTML += '<p class="student-name">' + studentName + '</p>';
+  certHTML += '<div class="name-line"></div>';
+  certHTML += '<p class="desc">has successfully completed <strong>Lesson 1: Initial Client Assessment</strong> of the Social Work Training Simulation programme, demonstrating competence in empathic engagement, active listening, strengths-based practice, risk awareness, and culturally sensitive communication with care-experienced young people.</p>';
+  certHTML += '<div class="score-badge"><span>' + score + '%</span><small>Assessment Score</small></div>';
+
+  // Footer with signature lines and seal
+  certHTML += '<div class="footer-row">';
+  certHTML += '<div class="sig-block"><div class="sig-line"></div><p class="sig-label">Training Director</p></div>';
+
+  // Seal SVG
+  certHTML += '<div class="seal"><svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">';
+  certHTML += '<circle cx="36" cy="36" r="34" fill="none" stroke="#d4a843" stroke-width="2"/>';
+  certHTML += '<circle cx="36" cy="36" r="28" fill="none" stroke="#d4a843" stroke-width="0.75"/>';
+  // Star points
+  var starPoints = '';
+  for (var si = 0; si < 5; si++) {
+    var outerAngle = (si * 72 - 90) * Math.PI / 180;
+    var innerAngle = ((si * 72) + 36 - 90) * Math.PI / 180;
+    starPoints += (si === 0 ? 'M' : 'L') + (36 + 14 * Math.cos(outerAngle)).toFixed(1) + ',' + (36 + 14 * Math.sin(outerAngle)).toFixed(1) + ' ';
+    starPoints += 'L' + (36 + 7 * Math.cos(innerAngle)).toFixed(1) + ',' + (36 + 7 * Math.sin(innerAngle)).toFixed(1) + ' ';
+  }
+  certHTML += '<path d="' + starPoints + 'Z" fill="#d4a843"/>';
+  certHTML += '<text x="36" y="56" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="5.5" fill="#d4a843" letter-spacing="0.1em">CERTIFIED</text>';
+  certHTML += '</svg></div>';
+
+  certHTML += '<div class="date-block"><p class="date-text">' + dateStr + '</p><div class="sig-line"></div><p class="sig-label">Date of Completion</p></div>';
+  certHTML += '</div>'; // footer-row
+
+  certHTML += '</div>'; // content
+  certHTML += '<p class="cert-id">Certificate ID: ' + certId + '</p>';
+  certHTML += '</div>'; // cert
+
+  certHTML += '<script>window.onload = function() { setTimeout(function() { window.print(); }, 600); };<\/script>';
+  certHTML += '</body></html>';
+
+  var printWin = window.open('', '_blank', 'width=1100,height=780');
+  if (printWin) {
+    printWin.document.write(certHTML);
+    printWin.document.close();
+  } else {
+    alert('Pop-up blocked. Please allow pop-ups for this site to print your certificate.');
+  }
+}
+
+// ═══════════════════════════════════════
 //  CHECK RESPONSE
 // ═══════════════════════════════════════
 function doCheck() {
@@ -681,6 +812,7 @@ function doCheck() {
     cls = 'background:#e6f0ec; border:1px solid rgba(74,124,111,0.3);';
     icon = '\uD83C\uDFAF';
     msg = 'Excellent! You scored <strong style="font-size:1.5em;">' + score + '%</strong> — you identified ' + correct + ' of ' + total + ' ideal responses. Strong instincts for empathic, trust-building engagement.';
+    msg += '<div style="margin-top:16px;"><button type="button" id="certBtn" style="display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg,#d4a843 0%,#c49a2d 100%); color:white; font-weight:700; font-size:16px; padding:14px 28px; border-radius:12px; border:none; cursor:pointer; box-shadow:0 4px 16px rgba(212,168,67,0.35); transition:all 0.3s ease; letter-spacing:0.02em;" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 8px 28px rgba(212,168,67,0.45)\';" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 4px 16px rgba(212,168,67,0.35)\';"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>Print Certificate of Completion</button></div>';
   } else if (score >= 40) {
     cls = 'background:#fdf6e3; border:1px solid rgba(212,168,67,0.3);';
     icon = '\uD83D\uDCDD';
@@ -692,7 +824,7 @@ function doCheck() {
   }
 
   var resultsEl = document.getElementById('results');
-  var rhtml = '<div class="slide-reveal rounded-xl p-6 flex items-start gap-4" style="' + cls + '"><span style="font-size:2em;">' + icon + '</span><p class="text-base leading-relaxed text-slate">' + msg + '</p></div>';
+  var rhtml = '<div class="slide-reveal rounded-xl p-6 flex items-start gap-4" style="' + cls + '"><span style="font-size:2em;">' + icon + '</span><div class="text-base leading-relaxed text-slate">' + msg + '</div></div>';
 
   // Written analysis
   var written = document.getElementById('freeText').value.trim();
