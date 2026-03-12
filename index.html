@@ -47,37 +47,40 @@ tailwind.config = {
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
 
-  /* Options */
-  .opt { transition: all 0.25s cubic-bezier(0.4,0,0.2,1); cursor: pointer; border: 2px solid #e8e4df; }
+  /* Response options */
+  .opt {
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    cursor: pointer; border: 2px solid #e8e4df;
+    user-select: none;
+  }
   .opt:hover:not(.locked) { transform: translateX(4px); border-color: #c45d3e; box-shadow: 0 4px 16px rgba(196,93,62,0.1); }
   .opt.picked { border-color: #c45d3e; background: #f9e8e2; }
-  .opt.good { border-color: #4a7c6f !important; background: #e6f0ec !important; }
-  .opt.bad  { border-color: #b33a3a !important; background: #fce8e8 !important; }
-  .opt.dimmed { opacity: 0.4; }
-  input[type="checkbox"] { display: none; }
-  .chk {
+  .opt.good { border-color: #4a7c6f !important; background: #e6f0ec !important; cursor: default; }
+  .opt.bad  { border-color: #b33a3a !important; background: #fce8e8 !important; cursor: default; }
+  .opt.dimmed { opacity: 0.4; cursor: default; }
+
+  .chk-box {
     width: 26px; height: 26px; border: 2px solid #b0a99f; border-radius: 6px;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s ease; flex-shrink: 0;
   }
-  .picked .chk { background: #c45d3e; border-color: #c45d3e; }
-  .good .chk   { background: #4a7c6f; border-color: #4a7c6f; }
-  .bad .chk    { background: #b33a3a; border-color: #b33a3a; }
-  .chk svg { display: none; }
-  .picked .chk svg, .good .chk svg, .bad .chk svg { display: block; }
+  .opt.picked .chk-box { background: #c45d3e; border-color: #c45d3e; }
+  .opt.good .chk-box   { background: #4a7c6f; border-color: #4a7c6f; }
+  .opt.bad .chk-box    { background: #b33a3a; border-color: #b33a3a; }
+  .chk-icon { display: none; }
+  .opt.picked .chk-icon, .opt.good .chk-icon, .opt.bad .chk-icon { display: block; }
 
-  /* Buttons */
-  .btn-primary {
+  /* Buttons — pointer-events:none on ::after is critical */
+  .btn-check {
     background: linear-gradient(135deg, #c45d3e 0%, #a04830 100%);
-    transition: all 0.3s ease; position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(196,93,62,0.35); }
-  .btn-primary:active { transform: translateY(0); }
+  .btn-check:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(196,93,62,0.35); }
+  .btn-check:active { transform: translateY(0); }
 
-  .info-btn {
-    transition: all 0.2s ease;
-  }
-  .info-btn:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .info-btn { transition: all 0.2s ease; }
+  .info-btn:hover { transform: scale(1.03); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
   /* Modal */
   .modal-overlay {
@@ -108,7 +111,7 @@ tailwind.config = {
 <body class="min-h-screen text-ink relative">
 <div class="relative z-10">
 
-  <!-- ══════ HEADER ══════ -->
+  <!-- HEADER -->
   <header class="bg-ink text-white">
     <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
       <div class="flex items-center gap-4">
@@ -127,51 +130,32 @@ tailwind.config = {
     </div>
   </header>
 
-  <!-- ══════ TITLE ══════ -->
+  <!-- TITLE -->
   <section class="max-w-6xl mx-auto px-6 pt-10 pb-3">
     <span class="font-mono text-sm tracking-[0.25em] uppercase lesson-badge font-semibold">Lesson #1</span>
     <h1 class="font-display text-4xl sm:text-5xl text-ink mt-2 leading-tight">Social Work Training Simulation</h1>
     <p class="text-slate/70 mt-3 text-lg max-w-3xl leading-relaxed">You are meeting Jayden for the first time. He is a 19-year-old care leaver living in a shared hostel. You begin by asking: <strong class="text-ink">"How are you feeling today, Jayden?"</strong></p>
   </section>
 
-  <!-- ══════ CONTEXT CHIPS ══════ -->
+  <!-- CONTEXT CHIPS -->
   <section class="max-w-6xl mx-auto px-6 py-5">
     <div class="flex flex-wrap gap-3 text-sm">
-      <span class="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full font-medium text-slate">
-        <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
-        Jayden, age 19
-      </span>
-      <span class="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full font-medium text-slate">
-        <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-        Care Leaver — Shared Hostel
-      </span>
-      <span class="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full font-medium text-slate">
-        <svg class="w-4 h-4 text-sage" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/></svg>
-        College Student
-      </span>
-      <span class="inline-flex items-center gap-2 bg-accentLight border border-accent/20 px-4 py-2 rounded-full font-semibold text-accent">
-        First Meeting — Initial Assessment
-      </span>
+      <span class="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full font-medium text-slate">Jayden, age 19</span>
+      <span class="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full font-medium text-slate">Care Leaver — Shared Hostel</span>
+      <span class="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full font-medium text-slate">College Student</span>
+      <span class="inline-flex items-center gap-2 bg-accentLight border border-accent/20 px-4 py-2 rounded-full font-semibold text-accent">First Meeting — Initial Assessment</span>
     </div>
   </section>
 
-  <!-- ══════ VIDEO SECTION ══════ -->
+  <!-- VIDEO + TRANSCRIPT -->
   <section class="max-w-6xl mx-auto px-6 pb-8">
     <div class="grid lg:grid-cols-5 gap-8">
 
       <!-- Clean Video Player -->
       <div class="lg:col-span-3">
         <div class="bg-black rounded-2xl overflow-hidden shadow-xl" style="aspect-ratio: 9/14; max-height: 580px;">
-          <video
-            id="simVideo"
-            class="w-full h-full object-cover"
-            preload="metadata"
-            poster=""
-            playsinline
-            controls
-          >
+          <video id="simVideo" class="w-full h-full object-cover" preload="metadata" playsinline controls>
             <source src="lesson1.mp4" type="video/mp4">
-            <!-- Fallback placeholder when no video file -->
             Your browser does not support the video tag.
           </video>
         </div>
@@ -180,7 +164,6 @@ tailwind.config = {
 
       <!-- Transcript Panel -->
       <div class="lg:col-span-2 flex flex-col gap-5">
-        <!-- Your question -->
         <div class="bg-white rounded-2xl border border-gray-200/60 px-6 py-4 flex items-center gap-4">
           <div class="w-10 h-10 rounded-full bg-sage text-white flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -191,27 +174,26 @@ tailwind.config = {
           </div>
         </div>
 
-        <!-- Transcript -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 flex-1 flex flex-col">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="font-display text-xl text-ink">Jayden's Response</h3>
             <span class="text-xs font-mono text-slate/50 bg-warm px-3 py-1 rounded-full">4 parts</span>
           </div>
-          <div class="p-5 space-y-4 flex-1 overflow-y-auto" id="transcript">
-            <div class="border-l-[3px] border-accent/40 pl-4 py-2">
-              <p class="text-xs font-mono text-accent/60 mb-1 uppercase tracking-wider">Part 1 — Distrust</p>
+          <div class="p-5 space-y-4 flex-1 overflow-y-auto">
+            <div class="border-l-[3px] border-accent pl-4 py-2">
+              <p class="text-xs font-mono text-accent mb-1 uppercase tracking-wider">Part 1 — Distrust</p>
               <p class="text-base leading-relaxed text-slate">"Look, I don't really want to be here, yeah? Every time I talk to someone like you, nothing changes. You write your notes and then I never see you again."</p>
             </div>
-            <div class="border-l-[3px] border-danger/40 pl-4 py-2">
-              <p class="text-xs font-mono text-danger/60 mb-1 uppercase tracking-wider">Part 2 — Anger</p>
+            <div class="border-l-[3px] border-danger pl-4 py-2">
+              <p class="text-xs font-mono text-danger mb-1 uppercase tracking-wider">Part 2 — Anger</p>
               <p class="text-base leading-relaxed text-slate">"They keep saying I've got 'behavioural issues.' But nobody asks why I'm angry. I'm angry because every adult in my life has let me down."</p>
             </div>
-            <div class="border-l-[3px] border-gold/40 pl-4 py-2">
-              <p class="text-xs font-mono text-gold/60 mb-1 uppercase tracking-wider">Part 3 — Frustration</p>
+            <div class="border-l-[3px] border-gold pl-4 py-2">
+              <p class="text-xs font-mono text-gold mb-1 uppercase tracking-wider">Part 3 — Frustration</p>
               <p class="text-base leading-relaxed text-slate">"The hostel is loud, it's dirty, and the staff talk to me like I'm a criminal. I didn't ask to grow up in care. I didn't ask for any of this."</p>
             </div>
-            <div class="border-l-[3px] border-sage/40 pl-4 py-2">
-              <p class="text-xs font-mono text-sage/60 mb-1 uppercase tracking-wider">Part 4 — Vulnerability</p>
+            <div class="border-l-[3px] border-sage pl-4 py-2">
+              <p class="text-xs font-mono text-sage mb-1 uppercase tracking-wider">Part 4 — Vulnerability</p>
               <p class="text-base leading-relaxed text-slate">"I was doing alright at college. I like the coursework. But I can't concentrate when I don't know if my room is going to still be there tomorrow."</p>
             </div>
           </div>
@@ -223,19 +205,17 @@ tailwind.config = {
   <!-- ══════ RESPONSE SECTION ══════ -->
   <section class="max-w-6xl mx-auto px-6 pb-8">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
-      <div class="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-accentLight/40 to-transparent">
+      <div class="px-8 py-6 border-b border-gray-100" style="background: linear-gradient(to right, #f9e8e2 0%, transparent 100%);">
         <div class="flex items-center gap-4">
           <div class="w-11 h-11 rounded-full bg-accent text-white flex items-center justify-center font-display text-xl">?</div>
           <div>
             <h2 class="font-display text-2xl text-ink">How should you respond?</h2>
-            <p class="text-base text-slate/60 mt-1">Select the responses you believe are most appropriate. Click "More Info" to learn why each works or doesn't.</p>
+            <p class="text-base text-slate/60 mt-1">Select the responses you believe are most appropriate. Click "More Info" to learn why.</p>
           </div>
         </div>
       </div>
 
-      <div class="p-8" id="optionsContainer">
-        <!-- Options built by JS from JSON data -->
-      </div>
+      <div class="p-8" id="optionsContainer"></div>
 
       <!-- Written response -->
       <div class="px-8 pb-6">
@@ -243,56 +223,100 @@ tailwind.config = {
           <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           Write your own response to Jayden:
         </label>
-        <textarea id="freeText" rows="4" class="w-full rounded-xl border-2 border-gray-200 focus:border-accent focus:ring-0 p-5 text-base leading-relaxed resize-none bg-cream/50 placeholder:text-slate/30 transition-colors outline-none" placeholder="Consider what Jayden needs to hear right now. What approach would build trust while addressing his concerns?"></textarea>
+        <textarea id="freeText" rows="4" class="w-full rounded-xl border-2 border-gray-200 focus:border-accent focus:ring-0 p-5 text-base leading-relaxed resize-none transition-colors outline-none" style="background:#faf8f5;" placeholder="Consider what Jayden needs to hear right now. What approach would build trust while addressing his concerns?"></textarea>
       </div>
 
-      <!-- Action buttons -->
+      <!-- Buttons -->
       <div class="px-8 pb-8 flex flex-wrap gap-4">
-        <button id="checkBtn" onclick="checkResponse()" class="btn-primary text-white font-bold px-10 py-4 rounded-xl text-base tracking-wide">
+        <button type="button" id="checkBtn" class="btn-check text-white font-bold px-10 py-4 rounded-xl text-base tracking-wide">
           ✦ Check My Response
         </button>
-        <button onclick="resetAll()" class="bg-warm hover:bg-gray-200 text-slate font-semibold px-8 py-4 rounded-xl text-base transition-colors border border-gray-200">
+        <button type="button" id="resetBtn" class="bg-warm hover:bg-gray-200 text-slate font-semibold px-8 py-4 rounded-xl text-base transition-colors border border-gray-200">
           Reset
         </button>
       </div>
 
       <!-- Results -->
-      <div id="results" class="hidden px-8 pb-8"></div>
+      <div id="results" class="px-8 pb-8" style="display:none;"></div>
     </div>
   </section>
 
-  <!-- ══════ FEEDBACK ══════ -->
-  <section id="feedbackSection" class="max-w-6xl mx-auto px-6 pb-8 hidden">
+  <!-- FEEDBACK (hidden) -->
+  <section id="feedbackSection" class="max-w-6xl mx-auto px-6 pb-8" style="display:none;">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden slide-reveal">
-      <div class="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-sageLight/60 to-transparent">
+      <div class="px-8 py-6 border-b border-gray-100" style="background: linear-gradient(to right, #e6f0ec 0%, transparent 100%);">
         <h2 class="font-display text-2xl text-ink flex items-center gap-3">
           <svg class="w-6 h-6 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
           Feedback &amp; Guidance
         </h2>
       </div>
-      <div class="p-8 space-y-5" id="feedbackContent"></div>
+      <div class="p-8 space-y-5">
+        <div class="rounded-xl p-6" style="background:#fdf6e3; border:1px solid rgba(212,168,67,0.2);">
+          <p class="text-base font-semibold mb-2" style="color:#d4a843;">Understanding Jayden's Behaviour</p>
+          <p class="text-base leading-relaxed text-slate/80">Jayden's hostility is a <strong>defence mechanism</strong> rooted in repeated attachment disruption. The most effective initial approach is honest, non-defensive engagement that does not try to immediately 'fix' his feelings. His opening line — "I don't really want to be here" — is testing whether you will react defensively or stay present.</p>
+        </div>
+        <div class="rounded-xl p-6" style="background:#e6f0ec; border:1px solid rgba(74,124,111,0.2);">
+          <p class="text-base font-semibold mb-2" style="color:#4a7c6f;">Cultural Competence</p>
+          <p class="text-base leading-relaxed text-slate/80">Avoid any assumptions about Jayden's behaviour based on stereotypes. Centre his <strong>individual experience</strong> and acknowledge the systemic failures he has endured. The care system, not Jayden, is responsible for the instability he describes.</p>
+        </div>
+        <div class="rounded-xl p-6" style="background:#f9e8e2; border:1px solid rgba(196,93,62,0.2);">
+          <p class="text-base font-semibold mb-2" style="color:#c45d3e;">Strengths-Based Entry Point</p>
+          <p class="text-base leading-relaxed text-slate/80">Connecting with his interest in <strong>college coursework</strong> provides a natural entry point for strengths-based engagement and future goal-setting. His final statement reveals vulnerability beneath the anger — he cares about his education but feels his environment makes success impossible.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ══════ RESOURCES ══════ -->
-  <section id="resourcesSection" class="max-w-6xl mx-auto px-6 pb-16 hidden">
+  <!-- RESOURCES (hidden) -->
+  <section id="resourcesSection" class="max-w-6xl mx-auto px-6 pb-16" style="display:none;">
     <div class="slide-reveal">
       <h2 class="font-display text-2xl text-ink mb-5 flex items-center gap-3">
         <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
         Learn More
       </h2>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="resourcesGrid"></div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <a href="https://www.socialworkengland.org.uk/standards/professional-standards/" target="_blank" class="resource-card bg-white rounded-xl p-5 block">
+          <p class="font-semibold text-base text-ink mb-1">Professional Standards</p>
+          <p class="text-sm text-slate/60 leading-relaxed">Social Work England's ethical practice framework.</p>
+          <span class="inline-block mt-2 text-xs text-accent font-mono">socialworkengland.org.uk →</span>
+        </a>
+        <a href="https://www.nice.org.uk/guidance/ng205" target="_blank" class="resource-card bg-white rounded-xl p-5 block">
+          <p class="font-semibold text-base text-ink mb-1">NICE: Looked-After Children</p>
+          <p class="text-sm text-slate/60 leading-relaxed">Supporting care-experienced young people.</p>
+          <span class="inline-block mt-2 text-xs text-sage font-mono">nice.org.uk →</span>
+        </a>
+        <a href="https://motivationalinterviewing.org/" target="_blank" class="resource-card bg-white rounded-xl p-5 block">
+          <p class="font-semibold text-base text-ink mb-1">Motivational Interviewing</p>
+          <p class="text-sm text-slate/60 leading-relaxed">Core MI techniques for engaging resistant clients.</p>
+          <span class="inline-block mt-2 text-xs text-gold font-mono">motivationalinterviewing.org →</span>
+        </a>
+        <a href="https://www.basw.co.uk/resources/anti-oppressive-practice" target="_blank" class="resource-card bg-white rounded-xl p-5 block">
+          <p class="font-semibold text-base text-ink mb-1">Anti-Oppressive Practice</p>
+          <p class="text-sm text-slate/60 leading-relaxed">BASW resources on culturally competent social work.</p>
+          <span class="inline-block mt-2 text-xs text-accent font-mono">basw.co.uk →</span>
+        </a>
+        <a href="https://www.becomecharity.org.uk/" target="_blank" class="resource-card bg-white rounded-xl p-5 block">
+          <p class="font-semibold text-base text-ink mb-1">Become Charity</p>
+          <p class="text-sm text-slate/60 leading-relaxed">Improving life for care-experienced young people.</p>
+          <span class="inline-block mt-2 text-xs text-sage font-mono">becomecharity.org.uk →</span>
+        </a>
+        <a href="https://learning.nspcc.org.uk/" target="_blank" class="resource-card bg-white rounded-xl p-5 block">
+          <p class="font-semibold text-base text-ink mb-1">NSPCC Learning</p>
+          <p class="text-sm text-slate/60 leading-relaxed">Attachment theory and trauma-informed practice.</p>
+          <span class="inline-block mt-2 text-xs text-gold font-mono">learning.nspcc.org.uk →</span>
+        </a>
+      </div>
     </div>
   </section>
 
 </div>
 
-<!-- ══════ INFO MODAL ══════ -->
-<div id="infoModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+<!-- INFO MODAL -->
+<div id="infoModal" class="modal-overlay">
   <div class="modal-box">
     <div id="modalHeader" class="px-8 py-5 border-b border-gray-100 flex items-center justify-between">
-      <h3 id="modalTitle" class="font-display text-xl text-ink"></h3>
-      <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-warm hover:bg-gray-200 flex items-center justify-center transition-colors">
+      <h3 id="modalTitle" class="font-display text-xl text-ink pr-4"></h3>
+      <button type="button" id="modalCloseBtn" class="w-9 h-9 rounded-full bg-warm hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0">
         <svg class="w-5 h-5 text-slate" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
@@ -302,326 +326,291 @@ tailwind.config = {
 
 <script>
 // ═══════════════════════════════════════
-//  STATIC JSON DATA — All scenario data
+//  ALL DATA
 // ═══════════════════════════════════════
-const SCENARIO_DATA = {
-  lesson: 1,
-  title: "Social Work Training Simulation",
-  client: {
-    name: "Jayden",
-    age: 19,
-    background: "Care leaver, recently left foster care, living in a shared hostel. Referred due to missed college sessions and verbal conflicts with hostel staff.",
-    profile: "Black British male, identifies as care-experienced"
-  },
-  socialWorkerQuestion: "How are you feeling today, Jayden?",
-  clientStatements: [
-    { part: 1, emotion: "Distrust", text: "Look, I don't really want to be here, yeah? Every time I talk to someone like you, nothing changes. You write your notes and then I never see you again." },
-    { part: 2, emotion: "Anger", text: "They keep saying I've got 'behavioural issues.' But nobody asks why I'm angry. I'm angry because every adult in my life has let me down." },
-    { part: 3, emotion: "Frustration", text: "The hostel is loud, it's dirty, and the staff talk to me like I'm a criminal. I didn't ask to grow up in care. I didn't ask for any of this." },
-    { part: 4, emotion: "Vulnerability", text: "I was doing alright at college. I like the coursework. But I can't concentrate when I don't know if my room is going to still be there tomorrow." }
-  ],
+var DATA = {
   responses: [
     {
       id: "A",
       text: "\"I hear you, Jayden. You've had a lot of people come and go, and I understand why trust is hard. I'm not going to make promises I can't keep, but I am going to be honest with you about what I can do.\"",
       type: "ideal",
       skill: "Honesty + Trust-Building",
-      info: {
-        title: "Why This Works: Honesty + Trust-Building",
-        whyGood: "This response directly acknowledges Jayden's core complaint — that professionals make promises and disappear. By explicitly stating you won't make promises you can't keep, you are breaking the pattern he expects. This creates a foundation of honesty that can gradually build trust.",
-        keyPrinciples: [
-          "Acknowledge the client's lived experience without being defensive",
-          "Set realistic expectations from the very first interaction",
-          "Demonstrate transparency about your role and limitations",
-          "Match your tone to the client's emotional register — serious, not cheerful"
-        ],
-        whatToAvoid: "Don't over-promise or be overly enthusiastic. Jayden has been let down by adults who said all the right things. Understated honesty is more powerful here than warmth.",
-        researchNote: "Attachment theory research shows that care-experienced young people with disrupted attachments respond better to consistent, boundaried honesty than to emotional warmth alone (Bowlby, 1988; Howe, 2011)."
-      }
+      whyGood: "This response directly acknowledges Jayden's core complaint — that professionals make promises and disappear. By explicitly stating you won't make promises you can't keep, you break the pattern he expects. This creates a foundation of honesty that can gradually build trust.",
+      principles: [
+        "Acknowledge the client's lived experience without being defensive",
+        "Set realistic expectations from the very first interaction",
+        "Demonstrate transparency about your role and limitations",
+        "Match your tone to the client's emotional register — serious, not cheerful"
+      ],
+      watchOut: "Don't over-promise or be overly enthusiastic. Jayden has been let down by adults who said all the right things. Understated honesty is more powerful here than warmth.",
+      research: "Attachment theory research shows that care-experienced young people with disrupted attachments respond better to consistent, boundaried honesty than to emotional warmth alone (Bowlby, 1988; Howe, 2011)."
     },
     {
       id: "B",
       text: "\"You need to control your temper if you want to keep your placement.\"",
       type: "poor",
       skill: "Threatening / Authoritarian",
-      info: {
-        title: "Why This Fails: Threatening / Authoritarian",
-        whyBad: "This response uses Jayden's housing as leverage to control his behaviour. It confirms his belief that professionals use power over him rather than working with him. It also completely ignores the emotional content of what he's just shared and focuses only on compliance.",
-        keyPrinciples: [
-          "Never use threats or conditional language around basic needs like housing",
-          "Authoritarian responses trigger fight-or-flight in traumatised young people",
-          "This approach reinforces the power imbalance Jayden is already describing",
-          "It shuts down communication rather than opening it up"
-        ],
-        howToImprove: "Instead of focusing on Jayden's behaviour, focus on the emotions driving it. Replace 'You need to control your temper' with 'It sounds like you're carrying a lot of anger, and I'd like to understand where that's coming from.'",
-        researchNote: "Trauma-informed care emphasises that behaviour is communication. Responding to the behaviour rather than the underlying need replicates the institutional harm the young person has already experienced (van der Kolk, 2014)."
-      }
+      whyBad: "This response uses Jayden's housing as leverage to control his behaviour. It confirms his belief that professionals use power over him rather than working with him. It completely ignores the emotional content of what he's shared and focuses only on compliance.",
+      principles: [
+        "Never use threats or conditional language around basic needs like housing",
+        "Authoritarian responses trigger fight-or-flight in traumatised young people",
+        "This approach reinforces the power imbalance Jayden is already describing",
+        "It shuts down communication rather than opening it up"
+      ],
+      howToImprove: "Replace with: 'It sounds like you're carrying a lot of anger, and I'd like to understand where that's coming from.' This focuses on the emotions driving the behaviour rather than threatening consequences.",
+      research: "Trauma-informed care emphasises that behaviour is communication. Responding to the behaviour rather than the underlying need replicates the institutional harm the young person has already experienced (van der Kolk, 2014)."
     },
     {
       id: "C",
       text: "\"You said you like the coursework at college — that's something worth building on. What subject are you studying?\"",
       type: "ideal",
       skill: "Strengths-Based + Building Rapport",
-      info: {
-        title: "Why This Works: Strengths-Based + Building Rapport",
-        whyGood: "Jayden's final statement reveals something positive he cares about — his college work. Picking up on this detail shows you were actually listening (not just writing notes). Asking a genuine question about his interests shifts the dynamic from interrogation to conversation, and begins to establish rapport on his terms.",
-        keyPrinciples: [
-          "Identify and reflect back the client's own strengths and interests",
-          "Use open-ended questions that show genuine curiosity, not assessment",
-          "Build rapport through shared human interest before addressing problems",
-          "Let the client be the expert on something — their coursework, their interests"
-        ],
-        whatToAvoid: "Don't pivot too quickly from acknowledging his pain to focusing on positives. This response works best after you've first validated his frustration.",
-        researchNote: "Strengths-based practice (Saleebey, 2006) shows that identifying and building on a person's existing competencies leads to more sustainable engagement than a deficit-focused approach."
-      }
+      whyGood: "Jayden's final statement reveals something positive he cares about — his college work. Picking up on this detail shows you were actually listening (not just writing notes). Asking a genuine question about his interests shifts the dynamic from interrogation to conversation.",
+      principles: [
+        "Identify and reflect back the client's own strengths and interests",
+        "Use open-ended questions that show genuine curiosity, not assessment",
+        "Build rapport through shared human interest before addressing problems",
+        "Let the client be the expert on something — their coursework, their passions"
+      ],
+      watchOut: "Don't pivot too quickly from acknowledging his pain to focusing on positives. This response works best after you've first validated his frustration.",
+      research: "Strengths-based practice (Saleebey, 2006) shows that identifying and building on a person's existing competencies leads to more sustainable engagement than a deficit-focused approach."
     },
     {
       id: "D",
       text: "\"We've all had tough times.\"",
       type: "poor",
       skill: "Minimising his specific experience",
-      info: {
-        title: "Why This Fails: Minimising",
-        whyBad: "This generic statement erases the specificity of Jayden's experience. Growing up in the care system, facing systemic neglect, and being labelled with 'behavioural issues' is not the same as generic hardship. This response tells Jayden that his pain is ordinary and not worth special attention — which is exactly what he's been told his whole life.",
-        keyPrinciples: [
-          "Never compare a client's trauma to general human experience",
-          "Minimising language ('we all', 'everyone', 'it's normal') invalidates the client",
-          "Acknowledge the specific, unique aspects of what they've been through",
-          "Care-experienced young people face systemic disadvantages that are not universal"
-        ],
-        howToImprove: "Replace with: 'What you've been through is significant, and your feelings about it make complete sense.' This validates without comparing.",
-        researchNote: "Rogers (1957) identified unconditional positive regard and accurate empathy as core conditions for therapeutic change. Minimising responses violate both conditions simultaneously."
-      }
+      whyBad: "This generic statement erases the specificity of Jayden's experience. Growing up in the care system is not the same as generic hardship. This tells Jayden that his pain is ordinary and not worth special attention — which is exactly what he's been told his whole life.",
+      principles: [
+        "Never compare a client's trauma to general human experience",
+        "Minimising language ('we all', 'everyone', 'it's normal') invalidates the client",
+        "Acknowledge the specific, unique aspects of what they've been through",
+        "Care-experienced young people face systemic disadvantages that are not universal"
+      ],
+      howToImprove: "Replace with: 'What you've been through is significant, and your feelings about it make complete sense.' This validates without comparing or minimising.",
+      research: "Rogers (1957) identified unconditional positive regard and accurate empathy as core conditions for therapeutic change. Minimising responses violate both conditions simultaneously."
     },
     {
       id: "E",
       text: "\"It sounds like the hostel environment is making everything harder. Can you tell me about a specific situation that frustrated you?\"",
       type: "ideal",
       skill: "Open-Ended Questioning + Validation",
-      info: {
-        title: "Why This Works: Open-Ended Questioning + Validation",
-        whyGood: "This combines two powerful techniques. First, it validates Jayden's experience by reflecting back what he's told you (the hostel is making things harder). Second, it invites him to share more through an open-ended question. Asking for a specific situation shows you want to understand his reality, not just tick assessment boxes.",
-        keyPrinciples: [
-          "Reflect back the client's own words to show active listening",
-          "Use open-ended questions (what, how, tell me) not closed ones (did you, are you)",
-          "Ask for specifics — this shows genuine interest and helps assessment",
-          "Validate first, then explore — never skip the validation step"
-        ],
-        whatToAvoid: "Don't ask 'Why?' questions (e.g. 'Why did that frustrate you?') as they can feel interrogative. 'Can you tell me about...' is softer and more inviting.",
-        researchNote: "Motivational Interviewing research (Miller & Rollnick, 2012) shows that open-ended questions combined with reflections increase client engagement and reduce resistance."
-      }
+      whyGood: "This combines two powerful techniques. First, it validates Jayden's experience by reflecting back what he's told you. Second, it invites him to share more through an open-ended question. Asking for a specific situation shows you want to understand his reality, not just tick assessment boxes.",
+      principles: [
+        "Reflect back the client's own words to show active listening",
+        "Use open-ended questions (what, how, tell me) not closed ones (did you, are you)",
+        "Ask for specifics — this shows genuine interest and helps assessment",
+        "Validate first, then explore — never skip the validation step"
+      ],
+      watchOut: "Don't ask 'Why?' questions (e.g. 'Why did that frustrate you?') as they can feel interrogative. 'Can you tell me about...' is softer and more inviting.",
+      research: "Motivational Interviewing research (Miller & Rollnick, 2012) shows that open-ended questions combined with reflections increase client engagement and reduce resistance."
     },
     {
       id: "F",
       text: "\"I'm different from the others, you'll see.\"",
       type: "poor",
       skill: "Over-promising / Saviourism",
-      info: {
-        title: "Why This Fails: Over-promising / Saviourism",
-        whyBad: "This is exactly what every previous professional has said. Jayden has heard 'I'm different' before — and then watched them leave. This response asks him to trust you based on a promise rather than evidence. It also centres your ego ('I'm different') rather than his needs. It's a form of saviourism that puts the worker's identity above the client's experience.",
-        keyPrinciples: [
-          "Never promise to be 'different' — prove it through consistent actions over time",
-          "Saviourism centres the worker and creates unhealthy dependency dynamics",
-          "Trust is built through reliable, boundaried behaviour — not declarations",
-          "Avoid any response that asks the client to take you on faith"
-        ],
-        howToImprove: "Replace with: 'I'm not going to ask you to trust me — that's something I'll need to earn. What I can tell you is what I'm able to help with today.'",
-        researchNote: "Research on professional boundaries (Trevithick, 2003) shows that over-identification with the client's pain often leads to burnout and inconsistent practice — the exact pattern Jayden is describing."
-      }
+      whyBad: "This is exactly what every previous professional has said. Jayden has heard 'I'm different' before — and watched them leave. This centres your ego ('I'm different') rather than his needs. It's a form of saviourism that puts the worker's identity above the client's experience.",
+      principles: [
+        "Never promise to be 'different' — prove it through consistent actions over time",
+        "Saviourism centres the worker and creates unhealthy dependency dynamics",
+        "Trust is built through reliable, boundaried behaviour — not declarations",
+        "Avoid any response that asks the client to take you on faith"
+      ],
+      howToImprove: "Replace with: 'I'm not going to ask you to trust me — that's something I'll need to earn. What I can tell you is what I'm able to help with today.' This is honest and action-oriented.",
+      research: "Research on professional boundaries (Trevithick, 2003) shows that over-identification with the client's pain often leads to burnout and inconsistent practice — the exact pattern Jayden is describing."
     },
     {
       id: "G",
       text: "\"You've had to deal with a lot of instability, and your frustration makes complete sense. Let's see if we can work on the housing situation so college doesn't have to suffer.\"",
       type: "ideal",
       skill: "Validation + Collaborative Planning",
-      info: {
-        title: "Why This Works: Validation + Collaborative Planning",
-        whyGood: "This response does three things well. It validates Jayden's frustration as a reasonable response to his circumstances (not a character flaw). It connects his housing instability to his college attendance — showing you understand the link he's making. And it suggests working together ('let's') rather than imposing a plan, which gives him agency.",
-        keyPrinciples: [
-          "Name the emotion and validate it explicitly — 'your frustration makes sense'",
-          "Show you understand the systemic connections (housing → college → wellbeing)",
-          "Use collaborative language: 'let's', 'we can', 'together', 'work on'",
-          "Offer a concrete next step without being prescriptive about the outcome"
-        ],
-        whatToAvoid: "Don't make this sound like you have all the answers. Keep it tentative: 'let's see if we can' rather than 'I'll sort your housing out'.",
-        researchNote: "Task-centred practice (Reid & Epstein, 1972) shows that clients engage more when they participate in identifying and prioritising the problems to work on."
-      }
+      whyGood: "This does three things well. It validates Jayden's frustration as a reasonable response. It connects housing instability to college — showing you understand the link. And it suggests working together ('let's') rather than imposing a plan, which gives him agency.",
+      principles: [
+        "Name the emotion and validate it explicitly — 'your frustration makes sense'",
+        "Show you understand the systemic connections (housing → college → wellbeing)",
+        "Use collaborative language: 'let's', 'we can', 'together'",
+        "Offer a concrete next step without being prescriptive about the outcome"
+      ],
+      watchOut: "Don't make this sound like you have all the answers. Keep it tentative: 'let's see if we can' rather than 'I'll sort your housing out'.",
+      research: "Task-centred practice (Reid & Epstein, 1972) shows that clients engage more when they participate in identifying and prioritising the problems to work on."
     },
     {
       id: "H",
       text: "\"Why are you missing college? You need to go.\"",
       type: "poor",
       skill: "Interrogative / Dismissive of context",
-      info: {
-        title: "Why This Fails: Interrogative / Dismissive",
-        whyBad: "Jayden has just spent four statements explaining exactly why he's missing college — housing instability, hostile hostel environment, lack of support, and emotional distress. Asking 'why are you missing college?' shows you weren't listening. The directive 'you need to go' ignores all the barriers he's described and places the responsibility solely on him.",
-        keyPrinciples: [
-          "Never ask a question the client has already answered — it signals you weren't listening",
-          "Directive language ('you need to') triggers resistance, especially in young people",
-          "This approach ignores structural barriers and individualises a systemic problem",
-          "It replicates the dynamic Jayden describes — being told what to do without being heard"
-        ],
-        howToImprove: "Replace with: 'You clearly value your education. It sounds like the instability at the hostel is making it really hard to keep going. What would need to change for college to feel manageable again?'",
-        researchNote: "Anti-oppressive practice (Thompson, 2012) requires practitioners to recognise how structural inequalities (poverty, care system, housing) constrain individual choices before making demands about behaviour."
-      }
+      whyBad: "Jayden has just explained exactly why he's missing college — housing instability, hostile environment, emotional distress. Asking 'why?' shows you weren't listening. 'You need to go' ignores all barriers and places responsibility solely on him.",
+      principles: [
+        "Never ask a question the client has already answered — it signals you weren't listening",
+        "Directive language ('you need to') triggers resistance in young people",
+        "This ignores structural barriers and individualises a systemic problem",
+        "It replicates the dynamic Jayden describes — being told what to do without being heard"
+      ],
+      howToImprove: "Replace with: 'You clearly value your education. It sounds like the instability at the hostel is making it really hard to keep going. What would need to change for college to feel manageable again?'",
+      research: "Anti-oppressive practice (Thompson, 2012) requires practitioners to recognise how structural inequalities constrain individual choices before making demands about behaviour."
     }
-  ],
-  feedback: [
-    {
-      title: "Understanding Jayden's Behaviour",
-      color: "gold",
-      text: "Jayden's hostility is a <strong>defence mechanism</strong> rooted in repeated attachment disruption. The most effective initial approach is honest, non-defensive engagement that does not try to immediately 'fix' his feelings. His opening line — \"I don't really want to be here\" — is testing whether you will react defensively or stay present."
-    },
-    {
-      title: "Cultural Competence",
-      color: "sage",
-      text: "Avoid any assumptions about Jayden's behaviour based on stereotypes. Centre his <strong>individual experience</strong> and acknowledge the systemic failures he has endured. The care system, not Jayden, is responsible for the instability he describes."
-    },
-    {
-      title: "Strengths-Based Entry Point",
-      color: "accent",
-      text: "Connecting with his interest in <strong>college coursework</strong> provides a natural entry point for strengths-based engagement and future goal-setting. His final statement reveals vulnerability beneath the anger — he cares about his education but feels his environment makes success impossible."
-    }
-  ],
-  resources: [
-    { title: "Professional Standards", desc: "Social Work England's ethical practice framework.", url: "https://www.socialworkengland.org.uk/standards/professional-standards/", color: "accent" },
-    { title: "NICE: Looked-After Children", desc: "Supporting care-experienced young people.", url: "https://www.nice.org.uk/guidance/ng205", color: "sage" },
-    { title: "Motivational Interviewing", desc: "Core MI techniques for engaging resistant clients.", url: "https://motivationalinterviewing.org/", color: "gold" },
-    { title: "Anti-Oppressive Practice", desc: "BASW resources on culturally competent social work.", url: "https://www.basw.co.uk/resources/anti-oppressive-practice", color: "accent" },
-    { title: "Become Charity", desc: "Improving life for care-experienced young people.", url: "https://www.becomecharity.org.uk/", color: "sage" },
-    { title: "NSPCC Learning", desc: "Attachment theory and trauma-informed practice.", url: "https://learning.nspcc.org.uk/", color: "gold" }
   ]
 };
 
 // ═══════════════════════════════════════
-//  IN-MEMORY STORAGE (safe for all environments)
-//  When deploying outside Claude.ai, replace
-//  with localStorage for persistence.
+//  IN-MEMORY STORE
 // ═══════════════════════════════════════
-const store = {};
-function saveState(key, value) {
-  store[key] = JSON.stringify(value);
-  // For standalone deployment, uncomment:
-  // try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
-}
-function loadState(key) {
-  const raw = store[key];
-  // For standalone deployment, uncomment:
-  // const raw = localStorage.getItem(key);
-  return raw ? JSON.parse(raw) : null;
-}
+var memStore = {};
+function save(key, val) { memStore[key] = JSON.stringify(val); }
+function load(key) { var raw = memStore[key]; return raw ? JSON.parse(raw) : null; }
 
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-let locked = false;
+var isLocked = false;
 
 // ═══════════════════════════════════════
-//  BUILD UI FROM JSON DATA
+//  BUILD OPTIONS
 // ═══════════════════════════════════════
 function buildOptions() {
-  const container = document.getElementById('optionsContainer');
-  const saved = loadState('lesson1_picks') || [];
+  var container = document.getElementById('optionsContainer');
+  var saved = load('lesson1_picks') || [];
+  var html = '';
 
-  container.innerHTML = SCENARIO_DATA.responses.map((r, i) => {
-    const isPicked = saved.includes(r.id);
-    return `
-    <div class="mb-5">
-      <label class="opt block bg-cream rounded-xl p-5 ${isPicked ? 'picked' : ''}" data-id="${r.id}" data-type="${r.type}" data-skill="${r.skill}" onclick="pick(this)">
-        <input type="checkbox" ${isPicked ? 'checked' : ''}>
-        <div class="flex items-start gap-4">
-          <div class="chk mt-1">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-          </div>
-          <div class="flex-1">
-            <p class="text-sm font-bold text-slate/40 mb-1.5 font-mono">${r.id}</p>
-            <p class="text-base leading-relaxed text-ink">${r.text}</p>
-          </div>
-        </div>
-      </label>
-      <div class="mt-2 ml-12">
-        <button class="info-btn inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg border transition-colors
-          ${r.type === 'ideal'
-            ? 'text-sage bg-sageLight/50 border-sage/20 hover:bg-sageLight'
-            : 'text-sage bg-sageLight/50 border-sage/20 hover:bg-sageLight'
-          }"
-          onclick="openModal('${r.id}')">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          More Info 
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-}
+  for (var i = 0; i < DATA.responses.length; i++) {
+    var r = DATA.responses[i];
+    var isPicked = saved.indexOf(r.id) !== -1;
+    var isIdeal = r.type === 'ideal';
+    var infoBg = isIdeal ? 'background:#e6f0ec; border:1px solid rgba(74,124,111,0.25); color:#4a7c6f;' : 'background:#e6f0ec; border:1px solid rgba(74,124,111,0.25); color:#4a7c6f;';
+    var infoLabel = isIdeal ? 'More Info ' : 'More Info ';
 
-function buildFeedback() {
-  const el = document.getElementById('feedbackContent');
-  const colorMap = { gold: ['goldLight','gold'], sage: ['sageLight','sage'], accent: ['accentLight','accent'] };
-  el.innerHTML = SCENARIO_DATA.feedback.map(f => {
-    const [bg, text] = colorMap[f.color];
-    return `<div class="bg-${bg}/60 border border-${text}/20 rounded-xl p-6">
-      <p class="text-base font-semibold text-${text} mb-2">${f.title}</p>
-      <p class="text-base leading-relaxed text-slate/80">${f.text}</p>
-    </div>`;
-  }).join('');
-}
+    html += '<div class="mb-5">';
+    html += '  <div class="opt block rounded-xl p-5' + (isPicked ? ' picked' : '') + '" data-id="' + r.id + '" data-type="' + r.type + '" data-skill="' + r.skill + '" style="background:#faf8f5;">';
+    html += '    <div class="flex items-start gap-4">';
+    html += '      <div class="chk-box mt-1"><svg class="chk-icon w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg></div>';
+    html += '      <div class="flex-1">';
+    html += '        <p class="text-sm font-bold text-slate/40 mb-1.5 font-mono">' + r.id + '</p>';
+    html += '        <p class="text-base leading-relaxed text-ink">' + r.text + '</p>';
+    html += '      </div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '  <div class="mt-2 pl-12">';
+    html += '    <button type="button" class="info-btn inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg" style="' + infoBg + '" data-info-id="' + r.id + '">';
+    html += '      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+    html += '      ' + infoLabel;
+    html += '    </button>';
+    html += '  </div>';
+    html += '</div>';
+  }
 
-function buildResources() {
-  const el = document.getElementById('resourcesGrid');
-  const icons = { accent: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', sage: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z', gold: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' };
-  const bgMap = { accent: 'accentLight', sage: 'sageLight', gold: 'goldLight' };
-  el.innerHTML = SCENARIO_DATA.resources.map(r => `
-    <a href="${r.url}" target="_blank" class="resource-card bg-white rounded-xl p-5 block">
-      <div class="w-10 h-10 rounded-lg bg-${bgMap[r.color]} flex items-center justify-center mb-3">
-        <svg class="w-5 h-5 text-${r.color}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="${icons[r.color]}"/></svg>
-      </div>
-      <p class="font-semibold text-base text-ink mb-1">${r.title}</p>
-      <p class="text-sm text-slate/60 leading-relaxed">${r.desc}</p>
-      <span class="inline-block mt-2 text-xs text-${r.color} font-mono">${new URL(r.url).hostname} →</span>
-    </a>`).join('');
+  container.innerHTML = html;
 }
 
 // ═══════════════════════════════════════
-//  INTERACTIONS
+//  EVENT DELEGATION (single listener, no inline onclick)
 // ═══════════════════════════════════════
-function pick(el) {
-  if (locked) return;
-  el.classList.toggle('picked');
-  // Save state
-  const picks = [...document.querySelectorAll('.opt.picked')].map(o => o.dataset.id);
-  saveState('lesson1_picks', picks);
-}
+document.addEventListener('click', function(e) {
 
-function openModal(id) {
-  const r = SCENARIO_DATA.responses.find(x => x.id === id);
+  // --- Option toggle ---
+  var optEl = e.target.closest('.opt');
+  if (optEl && !isLocked) {
+    e.preventDefault();
+    optEl.classList.toggle('picked');
+    // Save picks
+    var allPicked = document.querySelectorAll('.opt.picked');
+    var ids = [];
+    for (var k = 0; k < allPicked.length; k++) { ids.push(allPicked[k].getAttribute('data-id')); }
+    save('lesson1_picks', ids);
+    return;
+  }
+
+  // --- Info button ---
+  var infoBtn = e.target.closest('[data-info-id]');
+  if (infoBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    var rid = infoBtn.getAttribute('data-info-id');
+    openInfoModal(rid);
+    return;
+  }
+
+  // --- Modal close ---
+  if (e.target.id === 'modalCloseBtn' || e.target.closest('#modalCloseBtn')) {
+    closeModal();
+    return;
+  }
+  if (e.target.id === 'infoModal') {
+    closeModal();
+    return;
+  }
+
+  // --- Check button ---
+  if (e.target.id === 'checkBtn' || e.target.closest('#checkBtn')) {
+    e.preventDefault();
+    doCheck();
+    return;
+  }
+
+  // --- Reset button ---
+  if (e.target.id === 'resetBtn' || e.target.closest('#resetBtn')) {
+    e.preventDefault();
+    doReset();
+    return;
+  }
+});
+
+// Escape closes modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ═══════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════
+function openInfoModal(id) {
+  var r = null;
+  for (var i = 0; i < DATA.responses.length; i++) {
+    if (DATA.responses[i].id === id) { r = DATA.responses[i]; break; }
+  }
   if (!r) return;
-  const info = r.info;
-  const isIdeal = r.type === 'ideal';
-  const color = isIdeal ? 'sage' : 'accent';
-  const bgColor = isIdeal ? 'sageLight' : 'accentLight';
 
-  document.getElementById('modalHeader').className = `px-8 py-5 border-b border-gray-100 bg-${bgColor}/40`;
-  document.getElementById('modalTitle').textContent = info.title;
-  document.getElementById('modalTitle').className = `font-display text-xl text-${color}`;
+  var isIdeal = r.type === 'ideal';
+  var titleColor = isIdeal ? '#4a7c6f' : '#c45d3e';
+  var titleText = isIdeal ? ('Why This Works: ' + r.skill) : ('Why This Fails: ' + r.skill);
 
-  let html = '';
-  if (info.whyGood) {
-    html += `<div class="mb-5"><p class="text-sm font-mono text-sage uppercase tracking-wider mb-2">Why This Is Effective</p><p class="text-base leading-relaxed text-slate">${info.whyGood}</p></div>`;
+  document.getElementById('modalTitle').textContent = titleText;
+  document.getElementById('modalTitle').style.color = titleColor;
+  document.getElementById('modalHeader').style.background = isIdeal ? '#e6f0ec' : '#f9e8e2';
+
+  var html = '';
+
+  // Why good/bad
+  if (r.whyGood) {
+    html += '<div class="mb-5"><p class="text-sm font-mono uppercase tracking-wider mb-2" style="color:#4a7c6f;">Why This Is Effective</p><p class="text-base leading-relaxed text-slate">' + r.whyGood + '</p></div>';
   }
-  if (info.whyBad) {
-    html += `<div class="mb-5"><p class="text-sm font-mono text-danger uppercase tracking-wider mb-2">Why This Is Ineffective</p><p class="text-base leading-relaxed text-slate">${info.whyBad}</p></div>`;
+  if (r.whyBad) {
+    html += '<div class="mb-5"><p class="text-sm font-mono uppercase tracking-wider mb-2" style="color:#b33a3a;">Why This Is Ineffective</p><p class="text-base leading-relaxed text-slate">' + r.whyBad + '</p></div>';
   }
-  if (info.keyPrinciples) {
-    html += `<div class="mb-5 bg-cream rounded-xl p-5"><p class="text-sm font-mono text-slate/60 uppercase tracking-wider mb-3">Key Principles for Social Workers</p><ul class="space-y-2">${info.keyPrinciples.map(p => `<li class="flex items-start gap-3"><span class="w-2 h-2 rounded-full bg-${color} mt-2 flex-shrink-0"></span><span class="text-base leading-relaxed text-slate">${p}</span></li>`).join('')}</ul></div>`;
+
+  // Key principles
+  if (r.principles && r.principles.length) {
+    var dotColor = isIdeal ? '#4a7c6f' : '#c45d3e';
+    html += '<div class="mb-5 rounded-xl p-5" style="background:#faf8f5;"><p class="text-sm font-mono uppercase tracking-wider mb-3" style="color:#3d405b99;">Key Principles for Social Workers</p><ul class="space-y-3">';
+    for (var j = 0; j < r.principles.length; j++) {
+      html += '<li class="flex items-start gap-3"><span class="w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0" style="background:' + dotColor + ';"></span><span class="text-base leading-relaxed text-slate">' + r.principles[j] + '</span></li>';
+    }
+    html += '</ul></div>';
   }
-  if (info.howToImprove) {
-    html += `<div class="mb-5 bg-sageLight/50 border border-sage/20 rounded-xl p-5"><p class="text-sm font-mono text-sage uppercase tracking-wider mb-2">How To Improve This Response</p><p class="text-base leading-relaxed text-slate">${info.howToImprove}</p></div>`;
+
+  // How to improve
+  if (r.howToImprove) {
+    html += '<div class="mb-5 rounded-xl p-5" style="background:#e6f0ec; border:1px solid rgba(74,124,111,0.2);"><p class="text-sm font-mono uppercase tracking-wider mb-2" style="color:#4a7c6f;">How To Improve This Response</p><p class="text-base leading-relaxed text-slate">' + r.howToImprove + '</p></div>';
   }
-  if (info.whatToAvoid) {
-    html += `<div class="mb-5 bg-goldLight/50 border border-gold/20 rounded-xl p-5"><p class="text-sm font-mono text-gold uppercase tracking-wider mb-2">What To Watch Out For</p><p class="text-base leading-relaxed text-slate">${info.whatToAvoid}</p></div>`;
+
+  // Watch out
+  if (r.watchOut) {
+    html += '<div class="mb-5 rounded-xl p-5" style="background:#fdf6e3; border:1px solid rgba(212,168,67,0.2);"><p class="text-sm font-mono uppercase tracking-wider mb-2" style="color:#d4a843;">What To Watch Out For</p><p class="text-base leading-relaxed text-slate">' + r.watchOut + '</p></div>';
   }
-  if (info.researchNote) {
-    html += `<div class="bg-warm rounded-xl p-5"><p class="text-sm font-mono text-slate/50 uppercase tracking-wider mb-2">Research &amp; Theory</p><p class="text-sm leading-relaxed text-slate/70 italic">${info.researchNote}</p></div>`;
+
+  // Research
+  if (r.research) {
+    html += '<div class="rounded-xl p-5" style="background:#f5f0eb;"><p class="text-sm font-mono uppercase tracking-wider mb-2" style="color:#3d405b80;">Research &amp; Theory</p><p class="text-sm leading-relaxed italic" style="color:#3d405baa;">' + r.research + '</p></div>';
   }
 
   document.getElementById('modalBody').innerHTML = html;
@@ -633,84 +622,139 @@ function closeModal() {
   document.getElementById('infoModal').classList.remove('open');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ═══════════════════════════════════════
 //  CHECK RESPONSE
 // ═══════════════════════════════════════
-function checkResponse() {
-  if (locked) return;
-  locked = true;
+function doCheck() {
+  if (isLocked) return;
+  isLocked = true;
 
-  const opts = document.querySelectorAll('.opt');
-  let correct = 0, wrong = 0, total = 0;
+  var opts = document.querySelectorAll('.opt');
+  var correct = 0;
+  var wrong = 0;
+  var total = 0;
 
-  opts.forEach(o => {
+  for (var i = 0; i < opts.length; i++) {
+    var o = opts[i];
     o.classList.add('locked');
-    const t = o.dataset.type, sk = o.dataset.skill, sel = o.classList.contains('picked');
-    if (t === 'ideal') total++;
+    var type = o.getAttribute('data-type');
+    var skill = o.getAttribute('data-skill');
+    var sel = o.classList.contains('picked');
 
-    if (t === 'ideal' && sel) { o.classList.remove('picked'); o.classList.add('good'); correct++; }
-    else if (t === 'ideal') { o.classList.add('good'); }
-    else if (t === 'poor' && sel) { o.classList.remove('picked'); o.classList.add('bad'); wrong++; }
-    else { o.classList.add('dimmed'); }
+    if (type === 'ideal') total++;
 
-    // Append skill tag
-    const wrap = o.querySelector('.flex-1');
-    const tag = document.createElement('div');
-    tag.className = `mt-3 inline-block text-sm font-semibold font-mono px-3 py-1 rounded-lg ${t === 'ideal' ? 'bg-sageLight text-sage' : 'bg-dangerLight text-danger'}`;
-    tag.textContent = (t === 'ideal' ? '\u2714 Ideal — ' : '\u2718 Poor — ') + sk;
+    if (type === 'ideal' && sel) {
+      o.classList.remove('picked');
+      o.classList.add('good');
+      correct++;
+    } else if (type === 'ideal' && !sel) {
+      o.classList.add('good');
+    } else if (type === 'poor' && sel) {
+      o.classList.remove('picked');
+      o.classList.add('bad');
+      wrong++;
+    } else {
+      o.classList.add('dimmed');
+    }
+
+    // Add skill tag
+    var wrap = o.querySelector('.flex-1');
+    var tag = document.createElement('div');
+    var tagClass = type === 'ideal' ? 'background:#e6f0ec; color:#4a7c6f;' : 'background:#fce8e8; color:#b33a3a;';
+    var tagText = type === 'ideal' ? '\u2714 Ideal — ' + skill : '\u2718 Poor — ' + skill;
+    tag.style.cssText = 'margin-top:12px; display:inline-block; font-size:14px; font-weight:600; font-family:"JetBrains Mono",monospace; padding:4px 12px; border-radius:8px;' + tagClass;
+    tag.textContent = tagText;
     wrap.appendChild(tag);
-  });
-
-  const score = Math.max(0, Math.round(((correct - wrong) / total) * 100));
-  saveState('lesson1_score', score);
-  saveState('lesson1_correct', correct);
-  saveState('lesson1_wrong', wrong);
-  saveState('lesson1_written', document.getElementById('freeText').value.trim());
-
-  let cls, icon, msg;
-  if (score >= 75) { cls='bg-sageLight border-sage/30'; icon='\uD83C\uDFAF'; msg=`Excellent! You scored <strong class="text-2xl">${score}%</strong> — you identified ${correct} of ${total} ideal responses. Strong instincts for empathic, trust-building engagement.`; }
-  else if (score >= 40) { cls='bg-goldLight border-gold/30'; icon='\uD83D\uDCDD'; msg=`Good effort — <strong class="text-2xl">${score}%</strong>. You found ${correct} ideal response(s) but also chose ${wrong} ineffective one(s). Review the feedback below.`; }
-  else { cls='bg-accentLight border-accent/30'; icon='\uD83D\uDCA1'; msg=`You scored <strong class="text-2xl">${score}%</strong>. This is a tough scenario — study the feedback and \"More Info\" panels to understand what works and why.`; }
-
-  const r = document.getElementById('results');
-  let html = `<div class="slide-reveal ${cls} border rounded-xl p-6 flex items-start gap-4"><span class="text-3xl">${icon}</span><p class="text-base leading-relaxed text-slate">${msg}</p></div>`;
-
-  // Written analysis
-  const written = document.getElementById('freeText').value.trim();
-  if (written.length > 0) {
-    const kw = { empathy:['hear','understand','sounds like','feel','frustrat','sense','difficult','tough','hard','painful'], strengths:['college','coursework','strength','building','studying','interest','subject'], validation:['makes sense','valid','understandable','of course','not surprising','natural','complete sense'], honesty:['honest','promise','can do','transparent','what I can'], openEnded:['tell me','what ','how ','can you share','describe','help me understand','more about'] };
-    const lw = written.toLowerCase();
-    const found = Object.entries(kw).filter(([_,ws]) => ws.some(w => lw.includes(w))).map(([k]) => k);
-    const labels = { empathy:'Empathy & Active Listening', strengths:'Strengths-Based Approach', validation:'Validation', honesty:'Honesty & Trust-Building', openEnded:'Open-Ended Questioning' };
-    let wc, wt, wm;
-    if (found.length >= 3) { wc='bg-sageLight/60 border-sage/20'; wt='text-sage'; wm=`Strong response! Techniques detected: <strong>${found.map(f=>labels[f]).join(', ')}</strong>. Good instincts for engaging a guarded young person.`; }
-    else if (found.length >= 1) { wc='bg-goldLight/60 border-gold/20'; wt='text-gold'; wm=`Good start. Detected: <strong>${found.map(f=>labels[f]).join(', ')}</strong>. Try also incorporating empathic reflection and open-ended questioning.`; }
-    else { wc='bg-accentLight/60 border-accent/20'; wt='text-accent'; wm='Consider adding empathy, validation, and open-ended questions. Try reflecting Jayden\'s feelings and asking about his college interests.'; }
-    html += `<div class="mt-5 ${wc} border rounded-xl p-5"><p class="text-base font-semibold ${wt} mb-1">Written Response Analysis</p><p class="text-base text-slate/80 leading-relaxed">${wm}</p></div>`;
   }
 
-  r.innerHTML = html;
-  r.classList.remove('hidden');
+  var score = Math.max(0, Math.round(((correct - wrong) / total) * 100));
 
-  document.getElementById('feedbackSection').classList.remove('hidden');
-  document.getElementById('resourcesSection').classList.remove('hidden');
-  setTimeout(() => document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'center' }), 200);
+  // Save
+  save('lesson1_score', score);
+  save('lesson1_correct', correct);
+  save('lesson1_wrong', wrong);
+  save('lesson1_written', document.getElementById('freeText').value.trim());
+
+  var cls, icon, msg;
+  if (score >= 75) {
+    cls = 'background:#e6f0ec; border:1px solid rgba(74,124,111,0.3);';
+    icon = '\uD83C\uDFAF';
+    msg = 'Excellent! You scored <strong style="font-size:1.5em;">' + score + '%</strong> — you identified ' + correct + ' of ' + total + ' ideal responses. Strong instincts for empathic, trust-building engagement.';
+  } else if (score >= 40) {
+    cls = 'background:#fdf6e3; border:1px solid rgba(212,168,67,0.3);';
+    icon = '\uD83D\uDCDD';
+    msg = 'Good effort — <strong style="font-size:1.5em;">' + score + '%</strong>. You found ' + correct + ' ideal response(s) but also chose ' + wrong + ' ineffective one(s). Review the feedback below.';
+  } else {
+    cls = 'background:#f9e8e2; border:1px solid rgba(196,93,62,0.3);';
+    icon = '\uD83D\uDCA1';
+    msg = 'You scored <strong style="font-size:1.5em;">' + score + '%</strong>. This is a tough scenario — study the feedback and "More Info" panels to understand what works and why.';
+  }
+
+  var resultsEl = document.getElementById('results');
+  var rhtml = '<div class="slide-reveal rounded-xl p-6 flex items-start gap-4" style="' + cls + '"><span style="font-size:2em;">' + icon + '</span><p class="text-base leading-relaxed text-slate">' + msg + '</p></div>';
+
+  // Written analysis
+  var written = document.getElementById('freeText').value.trim();
+  if (written.length > 0) {
+    var kw = {
+      empathy: ['hear','understand','sounds like','feel','frustrat','sense','difficult','tough','hard','painful'],
+      strengths: ['college','coursework','strength','building','studying','interest','subject'],
+      validation: ['makes sense','valid','understandable','of course','not surprising','natural','complete sense'],
+      honesty: ['honest','promise','can do','transparent','what i can'],
+      openEnded: ['tell me','what ','how ','can you share','describe','help me understand','more about']
+    };
+    var lw = written.toLowerCase();
+    var found = [];
+    var labels = { empathy:'Empathy & Active Listening', strengths:'Strengths-Based Approach', validation:'Validation', honesty:'Honesty & Trust-Building', openEnded:'Open-Ended Questioning' };
+    var keys = Object.keys(kw);
+    for (var ki = 0; ki < keys.length; ki++) {
+      var words = kw[keys[ki]];
+      for (var wi = 0; wi < words.length; wi++) {
+        if (lw.indexOf(words[wi]) !== -1) { found.push(keys[ki]); break; }
+      }
+    }
+
+    var wStyle, wTitle, wMsg;
+    if (found.length >= 3) {
+      wStyle = 'background:rgba(230,240,236,0.6); border:1px solid rgba(74,124,111,0.2);';
+      wTitle = 'color:#4a7c6f;';
+      wMsg = 'Strong response! Techniques detected: <strong>' + found.map(function(f){return labels[f];}).join(', ') + '</strong>. Good instincts for engaging a guarded young person.';
+    } else if (found.length >= 1) {
+      wStyle = 'background:rgba(253,246,227,0.6); border:1px solid rgba(212,168,67,0.2);';
+      wTitle = 'color:#d4a843;';
+      wMsg = 'Good start. Detected: <strong>' + found.map(function(f){return labels[f];}).join(', ') + '</strong>. Try also incorporating empathic reflection and open-ended questioning.';
+    } else {
+      wStyle = 'background:rgba(249,232,226,0.6); border:1px solid rgba(196,93,62,0.2);';
+      wTitle = 'color:#c45d3e;';
+      wMsg = "Consider adding empathy, validation, and open-ended questions. Try reflecting Jayden's feelings and asking about his college interests.";
+    }
+    rhtml += '<div class="mt-5 rounded-xl p-5" style="' + wStyle + '"><p class="text-base font-semibold mb-1" style="' + wTitle + '">Written Response Analysis</p><p class="text-base leading-relaxed" style="color:#3d405bcc;">' + wMsg + '</p></div>';
+  }
+
+  resultsEl.innerHTML = rhtml;
+  resultsEl.style.display = 'block';
+
+  document.getElementById('feedbackSection').style.display = 'block';
+  document.getElementById('resourcesSection').style.display = 'block';
+
+  setTimeout(function() {
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 200);
 }
 
 // ═══════════════════════════════════════
 //  RESET
 // ═══════════════════════════════════════
-function resetAll() {
-  locked = false;
-  saveState('lesson1_picks', []);
-  saveState('lesson1_score', null);
-  buildOptions(); // Rebuild from scratch
-  document.getElementById('results').classList.add('hidden');
+function doReset() {
+  isLocked = false;
+  save('lesson1_picks', []);
+  save('lesson1_score', null);
+  buildOptions();
+  document.getElementById('results').style.display = 'none';
   document.getElementById('results').innerHTML = '';
-  document.getElementById('feedbackSection').classList.add('hidden');
-  document.getElementById('resourcesSection').classList.add('hidden');
+  document.getElementById('feedbackSection').style.display = 'none';
+  document.getElementById('resourcesSection').style.display = 'none';
   document.getElementById('freeText').value = '';
 }
 
@@ -718,51 +762,67 @@ function resetAll() {
 //  EXPORT
 // ═══════════════════════════════════════
 function exportResults() {
-  const l = [];
+  var l = [];
   l.push('=====================================================');
-  l.push('  SOCIAL WORK TRAINING SIMULATION \u2014 LESSON #1');
-  l.push('  Client: ' + SCENARIO_DATA.client.name + ', Age ' + SCENARIO_DATA.client.age);
+  l.push('  SOCIAL WORK TRAINING SIMULATION — LESSON #1');
+  l.push('  Client: Jayden, Age 19');
   l.push('  Date: ' + new Date().toLocaleString());
   l.push('=====================================================');
   l.push('');
-  l.push('YOUR QUESTION: "' + SCENARIO_DATA.socialWorkerQuestion + '"');
+  l.push('YOUR QUESTION: "How are you feeling today, Jayden?"');
   l.push('');
   l.push("CLIENT RESPONSE:");
-  l.push('\u2500'.repeat(50));
-  SCENARIO_DATA.clientStatements.forEach(s => {
-    l.push(`${s.part}. [${s.emotion}] "${s.text}"`);
-  });
+  l.push('--------------------------------------------------');
+  l.push('1. [Distrust] "Look, I don\'t really want to be here, yeah? Every time I talk to someone like you, nothing changes."');
+  l.push('2. [Anger] "They keep saying I\'ve got \'behavioural issues.\' But nobody asks why I\'m angry."');
+  l.push('3. [Frustration] "The hostel is loud, it\'s dirty, and the staff talk to me like I\'m a criminal."');
+  l.push('4. [Vulnerability] "I was doing alright at college. I like the coursework. But I can\'t concentrate."');
   l.push('');
   l.push('YOUR SELECTED RESPONSES:');
-  l.push('\u2500'.repeat(50));
-  document.querySelectorAll('.opt').forEach(o => {
-    const id = o.dataset.id, t = o.dataset.type, sk = o.dataset.skill;
-    const r = SCENARIO_DATA.responses.find(x => x.id === id);
-    const sel = o.classList.contains('good') || o.classList.contains('bad');
-    const mark = sel ? (t==='ideal' ? 'SELECTED (Correct)' : 'SELECTED (Incorrect)') : (t==='ideal' ? '(Ideal \u2014 not selected)' : '(Poor)');
-    l.push(`${id}) ${mark} [${sk}]`);
-    l.push(`   ${r.text}`);
+  l.push('--------------------------------------------------');
+  var opts = document.querySelectorAll('.opt');
+  for (var i = 0; i < opts.length; i++) {
+    var o = opts[i];
+    var id = o.getAttribute('data-id');
+    var type = o.getAttribute('data-type');
+    var skill = o.getAttribute('data-skill');
+    var sel = o.classList.contains('good') || o.classList.contains('bad');
+    var mark = sel ? (type==='ideal' ? 'SELECTED (Correct)' : 'SELECTED (Incorrect)') : (type==='ideal' ? '(Ideal - not selected)' : '(Poor)');
+    var rData = DATA.responses[i];
+    l.push(id + ') ' + mark + ' [' + skill + ']');
+    l.push('   ' + rData.text);
     l.push('');
-  });
-  const w = document.getElementById('freeText').value.trim();
-  if (w) { l.push('YOUR WRITTEN RESPONSE:'); l.push('\u2500'.repeat(50)); l.push(w); l.push(''); }
-  l.push('GUIDANCE:'); l.push('\u2500'.repeat(50));
-  SCENARIO_DATA.feedback.forEach(f => l.push('\u2022 ' + f.title + ': ' + f.text.replace(/<[^>]+>/g, '')));
+  }
+  var w = document.getElementById('freeText').value.trim();
+  if (w) { l.push('YOUR WRITTEN RESPONSE:'); l.push('--------------------------------------------------'); l.push(w); l.push(''); }
+  l.push('GUIDANCE:');
+  l.push('--------------------------------------------------');
+  l.push('* Jayden\'s hostility = defence mechanism from repeated attachment disruption.');
+  l.push('* Best approach: honest, non-defensive engagement.');
+  l.push('* Cultural competence: centre individual experience, avoid stereotypes.');
+  l.push('* College interest = strengths-based entry point.');
   l.push('');
-  l.push('RESOURCES:'); l.push('\u2500'.repeat(50));
-  SCENARIO_DATA.resources.forEach(r => l.push('\u2022 ' + r.title + ' \u2014 ' + r.url));
+  l.push('RESOURCES:');
+  l.push('--------------------------------------------------');
+  l.push('* socialworkengland.org.uk/standards/professional-standards/');
+  l.push('* nice.org.uk/guidance/ng205');
+  l.push('* motivationalinterviewing.org');
+  l.push('* basw.co.uk/resources/anti-oppressive-practice');
+  l.push('* becomecharity.org.uk');
+  l.push('* learning.nspcc.org.uk');
 
-  const blob = new Blob([l.join('\n')], { type:'text/plain' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'Lesson1_Jayden_Results.txt'; a.click(); URL.revokeObjectURL(a.href);
+  var blob = new Blob([l.join('\n')], { type: 'text/plain' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Lesson1_Jayden_Results.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
 buildOptions();
-buildFeedback();
-buildResources();
 </script>
 </body>
 </html>
